@@ -3,8 +3,21 @@ name: Continous integration
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        php_version: [7.3.9, 7.2.22, 7.1.32]
     steps:
       - uses: actions/checkout@master
+      - name: Setup PHP version ${{ matrix.php_version }}
+        uses: khs1994-docker/actions-setup-php@master
+        with:
+          php_version: ${{ matrix.php_version }}
+          args: |
+            mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.default \
+                    /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+            set -x
+            php -v
       - name: composer install
         uses: MilesChou/composer-action@master
         with:

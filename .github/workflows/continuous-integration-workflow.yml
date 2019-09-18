@@ -44,6 +44,8 @@ jobs:
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@master
         env:
+          SLACK_USERNAME: rtCamp
+          SLACK_COLOR: #3278BD
           SLACK_TITLE: Github Actions Notification
           SLACK_MESSAGE: Github Actions build finished successfuly
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

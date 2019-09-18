@@ -9,7 +9,7 @@ jobs:
         php_version: [7.3.9, 7.2.22, 7.1.32]
     steps:
       - uses: actions/checkout@master
-      - name: Setup PHP version ${{ matrix.php_version }}
+      - name: Setup PHP version
         uses: khs1994-docker/actions-setup-php@master
         with:
           php_version: ${{ matrix.php_version }}
@@ -22,9 +22,9 @@ jobs:
         uses: MilesChou/composer-action@master
         with:
           args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-
       - name: phpunit
         uses: nathanheffley/laravel-phpunit-action@master
+
   analyze:
     runs-on: ubuntu-latest
     steps:
@@ -33,8 +33,18 @@ jobs:
         uses: MilesChou/composer-action@master
         with:
           args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-
       - name: phpinsights
         uses: stefanzweifel/laravel-phpinsights-action@v1.0.0
         with:
           args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
+
+  slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_TITLE = Github Actions Notification,
+          SLACK_MESSAGE = Github Actions build finished successfuly
+        secrets: [SLACK_WEBHOOK]
+    needs: [test, analyze]

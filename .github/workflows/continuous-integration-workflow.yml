@@ -44,7 +44,7 @@ jobs:
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@master
         env:
-          SLACK_TITLE = Github Actions Notification
-          SLACK_MESSAGE = Github Actions build finished successfuly
+          SLACK_TITLE: Github Actions Notification
+          SLACK_MESSAGE: Github Actions build finished successfuly
         secrets: [SLACK_WEBHOOK]
     needs: [test, analyze]

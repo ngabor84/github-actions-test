@@ -21,10 +21,6 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
-
-// $app->withEloquent();
-
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -48,25 +44,6 @@ $app->singleton(
 
 /*
 |--------------------------------------------------------------------------
-| Register Middleware
-|--------------------------------------------------------------------------
-|
-| Next, we will register the middleware with the application. These can
-| be global middleware that run before and after each request into a
-| route or middleware that'll be assigned to some specific routes.
-|
-*/
-
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
-
-/*
-|--------------------------------------------------------------------------
 | Register Service Providers
 |--------------------------------------------------------------------------
 |
@@ -76,10 +53,10 @@ $app->singleton(
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
-
+if (class_exists(NunoMaduro\PhpInsights\Application\Adapters\Laravel\InsightsServiceProvider::class)) {
+    $app->register(NunoMaduro\PhpInsights\Application\Adapters\Laravel\InsightsServiceProvider::class);
+    $app->configure('insights');
+}
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

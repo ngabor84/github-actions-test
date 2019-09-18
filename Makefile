@@ -47,5 +47,8 @@ test: ##Run tests (without xdebug)
 	$(run_docker) bash -c "rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 	&& ./vendor/bin/phpunit"
 
+insights: ## Run PHP Insights (in docker)
+	@docker-compose exec app /bin/bash -l -c "php artisan insights --no-interaction --min-quality=100 --min-architecture=100 --min-style=100"
+
 debug-ip: ##Create IP for XDebug
 	sudo ifconfig en0 alias 10.254.254.254 255.255.255.0

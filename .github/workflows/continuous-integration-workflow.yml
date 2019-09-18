@@ -11,9 +11,7 @@ jobs:
           args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 
       - name: phpunit
-        uses: ./actions/run-phpunit/
-        with:
-          args: tests/
+        uses: nathanheffley/laravel-phpunit-action@master
   analyze:
     runs-on: ubuntu-latest
     steps:

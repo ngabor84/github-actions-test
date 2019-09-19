@@ -38,10 +38,10 @@ jobs:
         with:
           args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
 
-  slack-notification:
+  slack-build-notification:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Slack notification
+      - name: Send Slack notification (success build)
         uses: rtCamp/action-slack-notify@master
         env:
           SLACK_USERNAME: rtCamp
@@ -50,3 +50,39 @@ jobs:
           SLACK_MESSAGE: Github Actions build finished successfuly
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     needs: [test, analyze]
+
+  deploy-to-heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Heroku
+        uses: actions/heroku@master
+        with:
+          args: container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Push to Heroku
+        uses: actions/heroku@master
+        with:
+          args: container:push -a github-actions-test-staging web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Release to Heroku
+        uses: actions/heroku@master
+        with:
+          args: container:release -a github-actions-test-staging web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    needs: [test, analyze]
+
+  slack-deploy-notification:
+    runs-on: ubuntu-latest
+    steps:
+      -   name: Send Slack notification (success deploy)
+          uses: rtCamp/action-slack-notify@master
+          env:
+            SLACK_USERNAME: rtCamp
+            SLACK_COLOR: #1960a6
+            SLACK_TITLE: Github Actions Notification
+            SLACK_MESSAGE: Github Actions build finished successfuly
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    needs: [deploy-to-heroku]

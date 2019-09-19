@@ -60,6 +60,7 @@ jobs:
           args: container:login
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - uses: actions/checkout@master
       - name: Push to Heroku
         uses: actions/heroku@master
         with:
@@ -83,6 +84,6 @@ jobs:
             SLACK_USERNAME: rtCamp
             SLACK_COLOR: #1960a6
             SLACK_TITLE: Github Actions Notification
-            SLACK_MESSAGE: Github Actions build finished successfuly
+            SLACK_MESSAGE: Github Actions deploy to Heroku finished successfuly
             SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     needs: [deploy-to-heroku]

@@ -10,7 +10,7 @@ jobs:
           type: success
           job_name: '*Build started*'
           channel: '#github-actions-test'
-            url: ${{ secrets.SLACK_WEBHOOK }}
+          url: ${{ secrets.SLACK_WEBHOOK }}
   test:
     runs-on: ubuntu-latest
     strategy:

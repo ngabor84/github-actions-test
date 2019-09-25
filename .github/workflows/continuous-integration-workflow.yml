@@ -69,6 +69,10 @@ jobs:
     needs: [test, analyze]
     steps:
       - uses: actions/checkout@master
+      - name: Git remotes list
+        uses: srt32/git-actions@v0.0.3
+        with:
+          args: git remote -v
       - name: Deploy to Heroku
         uses: srt32/git-actions@v0.0.3
         with:

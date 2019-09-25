@@ -73,6 +73,10 @@ jobs:
         uses: srt32/git-actions@v0.0.3
         with:
           args: git remote -v
+      - name: Set Heroku remote
+        uses: srt32/git-actions@v0.0.3
+        with:
+          args: git remote add heroku-staging https://git.heroku.com/github-actions-test-staging.git
       - name: Deploy to Heroku
         uses: srt32/git-actions@v0.0.3
         with:

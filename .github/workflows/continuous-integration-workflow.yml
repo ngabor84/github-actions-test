@@ -70,9 +70,18 @@ jobs:
 #    needs: [test, analyze]
     steps:
       - uses: actions/checkout@master
+      - name: Login to Heroku
+        uses: actions/heroku@master
         with:
-          ref: heroku-staging master
-      - uses: actions/checkout@master
+          args: login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Add Heroku remote
+        uses: actions/heroku@master
+        with:
+          args: git:remote -a github-actions-test-staging
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       - name: Deploy to Heroku
         uses: srt32/git-actions@v0.0.3
         with:

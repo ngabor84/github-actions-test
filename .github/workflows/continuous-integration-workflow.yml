@@ -11,58 +11,59 @@ jobs:
           job_name: '*Build started*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest]
-        php_version: [7.3.9, 7.2.22, 7.1.32]
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup PHP version
-        uses: khs1994-docker/actions-setup-php@master
-        with:
-          php_version: ${{ matrix.php_version }}
-          args: |
-            mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.default \
-                    /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
-            set -x
-            php -v
-      - name: composer install
-        uses: MilesChou/composer-action@master
-        with:
-          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-      - name: phpunit
-        uses: nathanheffley/laravel-phpunit-action@master
-      - name: Slack Notification
-        uses: homoluctus/slatify@master
-        if: failure()
-        with:
-          type: fail
-          job_name: '*Run tests*'
-          channel: '#github-actions-test'
-          url: ${{ secrets.SLACK_WEBHOOK }}
 
-  analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: composer install
-        uses: MilesChou/composer-action@master
-        with:
-          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-      - name: phpinsights
-        uses: stefanzweifel/laravel-phpinsights-action@v1.0.0
-        with:
-          args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
-      - name: Slack Notification
-        uses: homoluctus/slatify@master
-        if: failure()
-        with:
-          type: fail
-          job_name: '*Analyze code with PHP Insights*'
-          channel: '#github-actions-test'
-          url: ${{ secrets.SLACK_WEBHOOK }}
+#  test:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest, macOS-latest]
+#        php_version: [7.3.9, 7.2.22, 7.1.32]
+#    steps:
+#      - uses: actions/checkout@master
+#      - name: Setup PHP version
+#        uses: khs1994-docker/actions-setup-php@master
+#        with:
+#          php_version: ${{ matrix.php_version }}
+#          args: |
+#            mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.default \
+#                    /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+#            set -x
+#            php -v
+#      - name: composer install
+#        uses: MilesChou/composer-action@master
+#        with:
+#          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+#      - name: phpunit
+#        uses: nathanheffley/laravel-phpunit-action@master
+#      - name: Slack Notification
+#        uses: homoluctus/slatify@master
+#        if: failure()
+#        with:
+#          type: fail
+#          job_name: '*Run tests*'
+#          channel: '#github-actions-test'
+#          url: ${{ secrets.SLACK_WEBHOOK }}
+#
+#  analyze:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#      - name: composer install
+#        uses: MilesChou/composer-action@master
+#        with:
+#          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+#      - name: phpinsights
+#        uses: stefanzweifel/laravel-phpinsights-action@v1.0.0
+#        with:
+#          args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
+#      - name: Slack Notification
+#        uses: homoluctus/slatify@master
+#        if: failure()
+#        with:
+#          type: fail
+#          job_name: '*Analyze code with PHP Insights*'
+#          channel: '#github-actions-test'
+#          url: ${{ secrets.SLACK_WEBHOOK }}
 
   deploy-to-heroku:
     runs-on: ubuntu-latest
@@ -70,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          ref: heroku-staging
+          ref: heroku-staging master
       - uses: actions/checkout@master
       - name: Deploy to Heroku
         uses: srt32/git-actions@v0.0.3

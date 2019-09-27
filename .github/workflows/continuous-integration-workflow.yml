@@ -69,14 +69,9 @@ jobs:
     needs: [test, analyze]
     steps:
       - uses: actions/checkout@master
-      - name: Git remotes list
-        uses: srt32/git-actions@v0.0.3
         with:
-          args: git remote -v
-      - name: Set Heroku remote
-        uses: srt32/git-actions@v0.0.3
-        with:
-          args: git remote add heroku-staging https://git.heroku.com/github-actions-test-staging.git
+          ref: heroku-staging
+      - uses: actions/checkout@master
       - name: Deploy to Heroku
         uses: srt32/git-actions@v0.0.3
         with:

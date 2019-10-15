@@ -73,7 +73,7 @@ jobs:
         uses: homoluctus/slatify@master
         with:
           type: success
-          job_name: '*Analyze code with PHP Insights*'
+          job_name: '*Build succeeded*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
 

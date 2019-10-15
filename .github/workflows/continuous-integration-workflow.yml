@@ -12,87 +12,87 @@ jobs:
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
 
-#  test:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        os: [ubuntu-latest, macOS-latest]
-#        php_version: [7.3.9, 7.2.22, 7.1.32]
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: Setup PHP version
-#        uses: khs1994-docker/actions-setup-php@master
-#        with:
-#          php_version: ${{ matrix.php_version }}
-#          args: |
-#            mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.default \
-#                    /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
-#            set -x
-#            php -v
-#      - name: composer install
-#        uses: MilesChou/composer-action@master
-#        with:
-#          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-#      - name: phpunit
-#        uses: nathanheffley/laravel-phpunit-action@master
-#      - name: Slack Notification
-#        uses: homoluctus/slatify@master
-#        if: failure()
-#        with:
-#          type: fail
-#          job_name: '*Run tests*'
-#          channel: '#github-actions-test'
-#          url: ${{ secrets.SLACK_WEBHOOK }}
-#
-#  analyze:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: composer install
-#        uses: MilesChou/composer-action@master
-#        with:
-#          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-#      - name: phpinsights
-#        uses: stefanzweifel/laravel-phpinsights-action@v1.0.0
-#        with:
-#          args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
-#      - name: Slack Notification
-#        uses: homoluctus/slatify@master
-#        if: failure()
-#        with:
-#          type: fail
-#          job_name: '*Analyze code with PHP Insights*'
-#          channel: '#github-actions-test'
-#          url: ${{ secrets.SLACK_WEBHOOK }}
-
-  deploy-to-heroku:
+  test:
     runs-on: ubuntu-latest
-#    needs: [test, analyze]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        php_version: [7.3.9, 7.2.22, 7.1.32]
     steps:
       - uses: actions/checkout@master
-      - name: Login to Heroku
-        uses: actions/heroku@master
+      - name: Setup PHP version
+        uses: khs1994-docker/actions-setup-php@master
         with:
-          args: container:login
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      - name: Push to Heroku
-        uses: actions/heroku@master
+          php_version: ${{ matrix.php_version }}
+          args: |
+            mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.default \
+                    /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini || true
+            set -x
+            php -v
+      - name: composer install
+        uses: MilesChou/composer-action@master
         with:
-          args: container:push -a github-actions-test-staging web
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      - name: Release to Heroku
-        uses: actions/heroku@master
-        with:
-          args: container:release -a github-actions-test-staging web
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: phpunit
+        uses: nathanheffley/laravel-phpunit-action@master
       - name: Slack Notification
         uses: homoluctus/slatify@master
-        if: always()
+        if: failure()
         with:
-          type: ${{ job.status }}
-          job_name: '*Deploy to Heroku*'
+          type: fail
+          job_name: '*Run tests*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
+
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: composer install
+        uses: MilesChou/composer-action@master
+        with:
+          args: install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: phpinsights
+        uses: stefanzweifel/laravel-phpinsights-action@v1.0.0
+        with:
+          args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80
+      - name: Slack Notification
+        uses: homoluctus/slatify@master
+        if: failure()
+        with:
+          type: fail
+          job_name: '*Analyze code with PHP Insights*'
+          channel: '#github-actions-test'
+          url: ${{ secrets.SLACK_WEBHOOK }}
+
+#  deploy-to-heroku:
+#    runs-on: ubuntu-latest
+#    needs: [test, analyze]
+#    steps:
+#      - uses: actions/checkout@master
+#      - name: Login to Heroku
+#        uses: actions/heroku@master
+#        with:
+#          args: container:login
+#        env:
+#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#      - name: Push to Heroku
+#        uses: actions/heroku@master
+#        with:
+#          args: container:push -a github-actions-test-staging web
+#        env:
+#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#      - name: Release to Heroku
+#        uses: actions/heroku@master
+#        with:
+#          args: container:release -a github-actions-test-staging web
+#        env:
+#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#      - name: Slack Notification
+#        uses: homoluctus/slatify@master
+#        if: always()
+#        with:
+#          type: ${{ job.status }}
+#          job_name: '*Deploy to Heroku*'
+#          channel: '#github-actions-test'
+#          url: ${{ secrets.SLACK_WEBHOOK }}

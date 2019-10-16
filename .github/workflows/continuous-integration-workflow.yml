@@ -73,7 +73,7 @@ jobs:
         uses: homoluctus/slatify@master
         with:
           type: success
-          job_name: '*Build succeeded*'
+          job_name: '*Build finished*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
 

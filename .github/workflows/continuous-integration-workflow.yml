@@ -1,5 +1,5 @@
-on: push
 name: Continous integration
+on: push
 jobs:
   started-notification:
     runs-on: ubuntu-latest

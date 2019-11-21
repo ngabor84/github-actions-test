@@ -42,7 +42,7 @@ jobs:
         uses: homoluctus/slatify@master
         if: failure()
         with:
-          type: fail
+          type: failure
           job_name: '*Run tests*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}
@@ -63,7 +63,7 @@ jobs:
         uses: homoluctus/slatify@master
         if: failure()
         with:
-          type: fail
+          type: failure
           job_name: '*Analyze code with PHP Insights*'
           channel: '#github-actions-test'
           url: ${{ secrets.SLACK_WEBHOOK }}

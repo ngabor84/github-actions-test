@@ -13,4 +13,14 @@ class HealthcheckControllerTest extends TestCase
 
         $this->assertResponseStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function healthcheck_called_respondSuccessTrue()
+    {
+        $this->get('/healthcheck');
+
+        $this->seeJson(['success' => true]);
+    }
 }
